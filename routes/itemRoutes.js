@@ -4,9 +4,9 @@ const Item = require('../models/Item');
 
 // Crear un artículo
 router.post('/', async (req, res) => {
-    const { description, quantity, price } = req.body;
+    const { code, name, photo, description, quantity, price } = req.body;
     try {
-        const newItem = new Item({ description, quantity, price });
+        const newItem = new Item({ code, name, photo, description, quantity, price });
         await newItem.save();
         res.status(201).json(newItem);
     } catch (error) {
@@ -17,20 +17,33 @@ router.post('/', async (req, res) => {
 // Obtener todos los artículos
 router.get('/', async (req, res) => {
     try {
-        const items = await Item.find({}, 'description quantity price'); // Solo devuelve los campos que manejas
+        const items = await Item.find({}, 'code name photo description quantity price');
         res.status(200).json(items);
     } catch (error) {
         res.status(500).json({ message: 'Error al obtener los artículos', error });
     }
 });
 
+// Obtener un artículo por ID
+router.get('/:id', async (req, res) => {
+    try {
+        const item = await Item.findById(req.params.id, 'code name photo description quantity price');
+        if (!item) {
+            return res.status(404).json({ message: 'Artículo no encontrado' });
+        }
+        res.status(200).json(item);
+    } catch (error) {
+        res.status(500).json({ message: 'Error al obtener el artículo', error });
+    }
+});
+
 // Actualizar un artículo
 router.put('/:id', async (req, res) => {
-    const { description, quantity, price } = req.body;
+    const { code, name, photo, description, quantity, price } = req.body;
     try {
         const updatedItem = await Item.findByIdAndUpdate(
             req.params.id,
-            { description, quantity, price },
+            { code, name, photo, description, quantity, price },
             { new: true }
         );
         res.status(200).json(updatedItem);
