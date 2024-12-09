@@ -13,8 +13,8 @@ const itemSchema = new mongoose.Schema({
     photo: { 
         type: String 
     },                             
-    description: 
-    { type: String, 
+    description: { 
+        type: String, 
         required: true 
     },
     quantity: { 
